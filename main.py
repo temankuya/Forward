@@ -1,6 +1,8 @@
 import os
+import asyncio
 from telethon.sync import TelegramClient, events
 from telethon.sessions import StringSession
+from telethon.errors import FloodWaitError
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -31,6 +33,9 @@ async def forward_all_history():
             elif message.media:
                 await client.send_file(target_channel, message.media, caption=message.text or "")
             print(f"✅ Forwarded message ID: {message.id}")
+        except FloodWaitError as e:
+            print(f"⏳ FloodWait: Harus tunggu {e.seconds} detik...")
+            await asyncio.sleep(e.seconds)
         except Exception as e:
             print(f"❌ Error message {message.id}: {e}")
 
@@ -44,6 +49,9 @@ async def realtime_forward(event):
         elif event.message.media:
             await client.send_file(target_channel, event.message.media, caption=event.message.text or "")
         print(f"🆕 Real-time forward: {event.message.id}")
+    except FloodWaitError as e:
+        print(f"⚠️ Real-time FloodWait: Harus tunggu {e.seconds} detik...")
+        await asyncio.sleep(e.seconds)
     except Exception as e:
         print(f"❌ Error real-time: {e}")
 
