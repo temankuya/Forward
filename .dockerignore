@@ -49,3 +49,5 @@ Dockerfile
 # Node (if accidentally present)
 node_modules/
 npm-debug.log
+
+last_id.txt
